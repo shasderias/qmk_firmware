@@ -124,7 +124,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // ╭───────┬───────┬───────┬───────┬───────┬───────╮                    ╭───────┬───────┬───────┬───────┬───────┬───────╮
     KC_F1  ,KC_F2  ,KC_F3  ,KC_F4  ,KC_F5  ,KC_F6  ,                     KC_F7  ,KC_F8  ,KC_F9  ,KC_F10 ,KC_F11 ,KC_F12 ,
 // ├───────┼───────┼───────┼───────┼───────┼───────┤                    ├───────┼───────┼───────┼───────┼───────┼───────┤
-    QK_BOOT,_______,_______,_______,_______,_______,                     _______,_______,_______,_______,_______,KC_PSCR,
+    _______,_______,_______,_______,_______,_______,                     _______,_______,_______,_______,_______,KC_PSCR,
 // ├───────┼───────┼───────┼───────┼───────┼───────┤                    ├───────┼───────┼───────┼───────┼───────┼───────┤
     _______,_______,_______,_______,_______,_______,                     _______,_______,_______,_______,_______,_______,
 // ├───────┼───────┼───────┼───────┼───────┼───────┼───────╮    ╭───────┼───────┼───────┼───────┼───────┼───────┼───────┤
@@ -158,12 +158,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // ├───────┼───────┼───────┼───────┼───────┼───────┼───────╮    ╭───────┼───────┼───────┼───────┼───────┼───────┼───────┤
     _______,_______,_______,_______,_______,_______,_______,     _______,_______,_______,_______,_______,_______,_______,
 // ╰───────┴───────┴───────┼───────┼───────┼───────┼───────┤    ├───────┼───────┼───────┼───────┼───────┴───────┴───────╯
-                            _______,_______,_______,_______,     KC_UNDS,_______,_______,_______
+                            _______,_______,_______,KC_UNDS,     KC_UNDS,_______,_______,_______
 //                         ╰───────┴───────┴───────┴───────╯    ╰───────┴───────┴───────┴───────╯
 ),
 
 };
 // clang-format on
+
+uint32_t led_off_callback(uint32_t trigger_time, void *cb_arg) {
+    rgblight_sethsv_noeeprom(HSV_BLACK);
+    return 0;
+}
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
@@ -182,15 +187,25 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     return true;
 }
 
-void leader_start_user(void) {}
+void leader_start_user(void) {
+    rgblight_sethsv_noeeprom(HSV_PURPLE);
+}
 
 void leader_end_user(void) {
     if (leader_sequence_one_key(KC_Q)) {
+        defer_exec(500, led_off_callback, NULL);
+        rgblight_sethsv_noeeprom(HSV_GOLD);
         layer_off(_GAME);
     } else if (leader_sequence_one_key(KC_G)) {
+        defer_exec(500, led_off_callback, NULL);
+        rgblight_sethsv_noeeprom(HSV_BLUE);
         layer_on(_GAME);
     } else if (leader_sequence_one_key(KC_P)) {
+        rgblight_sethsv_noeeprom(HSV_BLACK);
         SEND_STRING(SS_DOWN(X_LSFT) SS_TAP(X_INS) SS_UP(X_LSFT));
+    } else if (leader_sequence_two_keys(KC_ESCAPE, KC_BACKSPACE)) {
+        rgblight_sethsv_noeeprom(HSV_BLACK);
+        bootloader_jump();
     }
 }
 
@@ -228,7 +243,9 @@ void td_alt_finished(tap_dance_state_t *state, void *user_data) {
             register_code(KC_LEFT_ALT);
             break;
         case TD_DOUBLE_TAP:
-            register_code(KC_LEFT_ALT);
+            set_oneshot_mods(MOD_BIT(KC_LEFT_ALT));
+            set_oneshot_layer(_FUNC, ONESHOT_START);
+            clear_oneshot_layer_state(ONESHOT_PRESSED);
             break;
         case TD_DOUBLE_HOLD:
             register_code(KC_LEFT_ALT);
@@ -247,7 +264,6 @@ void td_alt_reset(tap_dance_state_t *state, void *user_data) {
             unregister_code(KC_LEFT_ALT);
             break;
         case TD_DOUBLE_TAP:
-            unregister_code(KC_LEFT_ALT);
             break;
         case TD_DOUBLE_HOLD:
             unregister_code(KC_LEFT_ALT);
@@ -271,7 +287,9 @@ void td_ctrl_finished(tap_dance_state_t *state, void *user_data) {
             register_code(KC_LEFT_CTRL);
             break;
         case TD_DOUBLE_TAP:
-            register_code(KC_LEFT_CTRL);
+            set_oneshot_mods(MOD_BIT(KC_LEFT_ALT));
+            set_oneshot_layer(_FUNC, ONESHOT_START);
+            clear_oneshot_layer_state(ONESHOT_PRESSED);
             break;
         case TD_DOUBLE_HOLD:
             register_code(KC_LEFT_CTRL);
@@ -290,7 +308,6 @@ void td_ctrl_reset(tap_dance_state_t *state, void *user_data) {
             unregister_code(KC_LEFT_CTRL);
             break;
         case TD_DOUBLE_TAP:
-            unregister_code(KC_LEFT_CTRL);
             break;
         case TD_DOUBLE_HOLD:
             unregister_code(KC_LEFT_CTRL);
@@ -341,7 +358,9 @@ tap_dance_action_t tap_dance_actions[] = {
 };
 
 void keyboard_post_init_user(void) {
-    debug_enable = true;
+    rgblight_enable_noeeprom();
+    rgblight_sethsv_noeeprom(HSV_BLACK);
+    rgblight_mode_noeeprom(RGBLIGHT_MODE_STATIC_LIGHT);
 }
 
 void caps_word_set_user(bool active) {

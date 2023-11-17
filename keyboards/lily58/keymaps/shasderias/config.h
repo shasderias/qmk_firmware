@@ -20,40 +20,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-/* Select hand configuration */
-
-// #define MASTER_LEFT
-// #define MASTER_RIGHT
 #define EE_HANDS
 
 #define QUICK_TAP_TERM 0
-#define TAPPING_TERM 135
-
+#define TAPPING_TERM 160
 #define PERMISSIVE_HOLD
 #define HOLD_ON_OTHER_KEY_PRESS
 
 #define RP2040_BOOTLOADER_DOUBLE_TAP_RESET
 
 #undef RGBLED_NUM
-#define RGBLIGHT_EFFECT_BREATHING
-#define RGBLIGHT_EFFECT_RAINBOW_MOOD
-#define RGBLIGHT_EFFECT_RAINBOW_SWIRL
-#define RGBLIGHT_EFFECT_SNAKE
-#define RGBLIGHT_EFFECT_KNIGHT
-#define RGBLIGHT_EFFECT_CHRISTMAS
-#define RGBLIGHT_EFFECT_STATIC_GRADIENT
-#define RGBLIGHT_EFFECT_RGB_TEST
-#define RGBLIGHT_EFFECT_ALTERNATING
-#define RGBLIGHT_EFFECT_TWINKLE
-#define RGBLED_NUM 27
-#define RGBLIGHT_LIMIT_VAL 120
+#undef WS2812_DI_PIN
+#define RGBLED_NUM 2
+#define WS2812_DI_PIN 17
+#define RGBLED_SPLIT {1, 1}
+#define RGBLIGHT_LIMIT_VAL 255
 #define RGBLIGHT_HUE_STEP 10
 #define RGBLIGHT_SAT_STEP 17
 #define RGBLIGHT_VAL_STEP 17
-
-// Underglow
-/*
-#undef RGBLED_NUM
-#define RGBLED_NUM 14    // Number of LEDs
-#define RGBLIGHT_SLEEP
-*/
