@@ -18,7 +18,12 @@
  */
 
 // Custom configuration
+#pragma once
+
 #undef DEBOUNCE
 #define DEBOUNCE 7
 
-#define TAPPING_TERM 130
+#define DYNAMIC_KEYMAP_LAYER_COUNT 7
+
+#define QUICK_TAP_TERM 0
+#define TAPPING_TERM 230
