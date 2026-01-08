@@ -28,7 +28,7 @@
 #define LOSP LT(_LOWER, KC_SPC)
 #define R_SPC LT(_RAISE, KC_SPC)
 
-#define MOLO MO(_LOWER)
+#define MOLO MO(_FUNC)
 #define MOUT MO(_UTILITY)
 
 #define TD_RASP TD(TD_RIGHT_SPACE)
@@ -123,7 +123,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // ├───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┴───────┤
     KC_TILD,_______,KC_LBRC,KC_RBRC,_______,_______,_______,KC_COLN,KC_EQL ,_______,    _______    ,
 // ├───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┬───────┤
-    _______,_______,KC_LCBR,KC_RCBR,_______,_______,_______,KC_UNDS,KC_MINS,KC_EQL ,_______,_______,
+    _______,_______,_______,KC_LCBR,KC_RCBR,_______,_______,KC_UNDS,KC_MINS,KC_EQL ,_______,_______,
 // ├───────┼───────┼───────┼───────┴───────┴───┬───┴───┬───┴───────┴───────┼───────┼───────┼───────┤
     _______,_______,_______,      _______      ,_______,      _______      ,KC_PLUS,_______,QK_BOOT
 // ╰───────┴───────┴───────┴───────────────────┴───────┴───────────────────┴───────┴───────┴───────╯
@@ -149,7 +149,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // ├───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┬───────┤
     _______,_______,RM_NEXT,RM_SPDD,RM_SPDU,_______,RM_HUED,RM_VALD,RM_HUEU,_______,_______,_______,
 // ├───────┼───────┼───────┼───────┴───────┴───┬───┴───┬───┴───────┴───────┼───────┼───────┼───────┤
-    _______,_______,_______,      QK_BAT       ,_______,       _______     ,_______,_______,DBG_SW
+    _______,_______,_______,      QK_BAT       ,_______,       _______     ,_______,_______,QK_BOOT
 // ╰───────┴───────┴───────┴───────────────────┴───────┴───────────────────┴───────┴───────┴───────╯
 ),
 
@@ -252,7 +252,7 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
 
 const uint16_t PROGMEM combo_back_slash[] = {KC_P, KC_BSPC, COMBO_END};
 const uint16_t PROGMEM combo_semicolon[]  = {KC_J, KC_K, COMBO_END};
-const uint16_t PROGMEM combo_slash[]      = {KC_DOT, KC_RSFT, COMBO_END};
+const uint16_t PROGMEM combo_slash[]      = {KC_DOT, CK_RSFT, COMBO_END};
 const uint16_t PROGMEM combo_quote[]      = {KC_K, KC_L, COMBO_END};
 
 combo_t key_combos[] = {
