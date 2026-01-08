@@ -60,39 +60,28 @@ qmk clean
 
 Located in: `keyboards/lily58/keymaps/shasderias/`
 
-**Key Features:**
-- **Tap Dance**: Complex tap/hold behaviors on Alt, Ctrl, and Caps keys
-  - Single tap: oneshot layer to base
-  - Single hold: modifier key
-  - Double tap: oneshot modifier + func layer
-  - Double hold: modifier + func layer
-- **Custom Keycode**: `KC_CCCV` - tap for paste, hold for copy
-- **Leader Key**: Used to switch game layer and trigger bootloader
-- **Layers**: QWERTY (base), GAME, LOWER, RAISE, FUNC, NUMBER, CAPS
-- **RGB Control**: Uses 2 LEDs per side for visual feedback on layer changes
-- **Caps Word**: Activates dedicated CAPS layer with underscore on spacebar
+**Custom Keycodes Available:**
+- `KC_CCCV` - tap for paste, hold for copy
 
-**Hardware Config:**
-- RP2040 (KB2040) conversion with custom pin mappings
+**Notes:**
+- Hardware: RP2040 (KB2040) conversion with custom pin mappings
 - EE_HANDS for split side detection
-- Tapping term: 200ms with permissive hold
-- RGB on pin 17 with custom HSV feedback
+- RGB on pin 17
 
 ### epomaker/th40:shasderias
 
 Located in: `keyboards/epomaker/th40/keymaps/shasderias/`
 
-**Key Features:**
-- Uses `rdmctmzt_common` library for wireless functionality (BLE, 2.4GHz, USB)
-- Custom keycodes for mode switching: `MD_BLE1`, `MD_BLE2`, `MD_BLE3`, `MD_24G`, `MD_USB`
-- Battery status with `QK_BAT` keycode
-- 2 layers (base + function layer with connectivity controls)
-- Reduced debounce (7ms) and tapping term (130ms) for responsiveness
+**Custom Keycodes Available:**
+- Wireless mode switching: `MD_BLE1`, `MD_BLE2`, `MD_BLE3`, `MD_24G`, `MD_USB`
+- Wireless utilities: `QK_BAT`, `QK_WLO`, `MW_CH`
+- System: `DBG_SW`, `EE_CLR`, `QK_BOOT`
+- RGB Matrix: `RM_TOGG`, `RM_VALU`, `RM_SATD`, `RM_NEXT`, `RM_SPDD`, `RM_SPDU`, `RM_HUED`, `RM_VALD`, `RM_HUEU`
 
-**Hardware Config:**
-- ES32 FS026 MCU (Cortex M0)
-- Custom bootloader and SPI drivers
-- VIA enabled for dynamic keymap support
+**Notes:**
+- Hardware: ES32 FS026 MCU (Cortex M0) with custom bootloader and SPI drivers
+- Uses `rdmctmzt_common` library at `lib/rdmctmzt_common/` for wireless functionality (BLE, 2.4GHz, USB)
+- VIA enabled for dynamic keymap configuration
 
 ## Code Structure
 
