@@ -26,21 +26,34 @@
 
 #define SHSP MT(MOD_LSFT, KC_SPC)
 #define LOSP LT(_LOWER, KC_SPC)
-#define R_SPC LT(_RAISE, KC_SPC)
+#define CK_RSPC LT(_RAISE, KC_SPC)
 
-#define MOLO MO(_FUNC)
 #define MOUT MO(_UTILITY)
-
-#define TD_RASP TD(TD_RIGHT_SPACE)
 
 #define TC_ALT TD(TD_ALT)
 #define TC_CTRL TD(TD_CTRL)
 #define TC_SHFT TD(TD_SHIFT)
 #define CK_TDCA TD(TD_CAPS)
 #define CK_TDRC TD(TD_RCTRL)
-#define CK_LSPC TD(TD_LEFT_SPACE)
 #define CK_RSFT MO(_RIGHT_SHIFT)
 #define CK_LGUI TD(TD_LGUI)
+
+#define CK_LSPC TD(TD_LEFT_SPACE)
+#define CK_FN MO(_FUNC)
+#define CK_RSPC TD(TD_RIGHT_SPACE)
+
+#define KC_SF1 S(KC_F1)
+#define KC_SF2 S(KC_F2)
+#define KC_SF3 S(KC_F3)
+#define KC_SF4 S(KC_F4)
+#define KC_SF5 S(KC_F5)
+#define KC_SF6 S(KC_F6)
+#define KC_SF7 S(KC_F7)
+#define KC_SF8 S(KC_F8)
+#define KC_SF9 S(KC_F9)
+#define KC_SF10 S(KC_F10)
+#define KC_SF11 S(KC_F11)
+#define KC_SF12 S(KC_F12)
 
 enum tap_dance_state {
     TD_NONE,
@@ -71,8 +84,8 @@ enum {
     TD_CAPS,
     TD_RCTRL,
     TD_SHIFT,
-    TD_RIGHT_SPACE,
     TD_LEFT_SPACE,
+    TD_RIGHT_SPACE,
     TD_LGUI,
 };
 
@@ -86,10 +99,10 @@ void td_rctrl_finished(tap_dance_state_t *state, void *user_data);
 void td_rctrl_reset(tap_dance_state_t *state, void *user_data);
 void td_shift_finished(tap_dance_state_t *state, void *user_data);
 void td_shift_reset(tap_dance_state_t *state, void *user_data);
-void td_right_space_finished(tap_dance_state_t *state, void *user_data);
-void td_right_space_reset(tap_dance_state_t *state, void *user_data);
 void td_left_space_finished(tap_dance_state_t *state, void *user_data);
 void td_left_space_reset(tap_dance_state_t *state, void *user_data);
+void td_right_space_finished(tap_dance_state_t *state, void *user_data);
+void td_right_space_reset(tap_dance_state_t *state, void *user_data);
 void td_lgui_finished(tap_dance_state_t *state, void *user_data);
 void td_lgui_reset(tap_dance_state_t *state, void *user_data);
 
@@ -117,7 +130,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // ├───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┬───────┤
     TC_SHFT,KC_SLSH, KC_Z  , KC_X  , KC_C  , KC_V  , KC_B  , KC_N  , KC_M  ,KC_COMM,KC_DOT ,CK_RSFT,
 // ├───────┼───────┼───────┼───────┴───────┴───┬───┴───┬───┴───────┴───────┼───────┼───────┼───────┤
-    TC_CTRL,CK_LGUI,TC_ALT,      CK_LSPC       , MOLO  ,       R_SPC       ,KC_RALT,KC_APP ,CK_TDRC
+    TC_CTRL,CK_LGUI,TC_ALT,      CK_LSPC       , CK_FN ,       CK_RSPC     ,KC_RALT,KC_APP ,CK_TDRC
 // ╰───────┴───────┴───────┴───────────────────┴───────┴───────────────────┴───────┴───────┴───────╯
 ),
 
@@ -157,18 +170,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // ╰───────┴───────┴───────┴───────────────────┴───────┴───────────────────┴───────┴───────┴───────╯
 ),
 
-// [_NUMBER] = LAYOUT_tkl_ansi(
-// // ╭───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────╮
-//     _______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,
-// // ├───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┴───────┤
-//     _______,_______,_______,_______,_______,_______,_______,_______,_______,_______,    _______    ,
-// // ├───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┬───────┤
-//     _______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,
-// // ├───────┼───────┼───────┼───────┴───────┴───┬───┴───┬───┴───────┴───────┼───────┼───────┼───────┤
-//     _______,_______,_______,      _______      ,_______,      _______      ,_______,_______,_______
-// // ╰───────┴───────┴───────┴───────────────────┴───────┴───────────────────┴───────┴───────┴───────╯
-// ),
-
 [_RCTRL] = LAYOUT_tkl_ansi(
 // ╭───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────╮
     KC_GRV , KC_1  , KC_2  , KC_3  , KC_4  , KC_5  , KC_6  , KC_7  , KC_8  , KC_9  , KC_0  ,_______,
@@ -195,11 +196,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_TD_FN] = LAYOUT_tkl_ansi(
 // ╭───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────╮
-    KC_F1  , KC_F2 , KC_F3 , KC_F4 , KC_F5 , KC_F6 , KC_F7 , KC_F8 , KC_F9 ,KC_F10 ,KC_F11 ,KC_F12 ,
+     KC_F1 , KC_F2 , KC_F3 , KC_F4 , KC_F5 , KC_F6 , KC_F7 , KC_F8 , KC_F9 ,KC_F10 ,KC_F11 ,KC_F12 ,
 // ├───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┴───────┤
     _______,_______,_______,_______,_______,_______,_______,_______,_______,_______,    _______    ,
 // ├───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┬───────┤
-    S(KC_F1),S(KC_F2),S(KC_F3),S(KC_F4),S(KC_F5),S(KC_F6),S(KC_F7),S(KC_F8),S(KC_F9),S(KC_F10),S(KC_F11),S(KC_F12),
+    KC_SF1 ,KC_SF2 ,KC_SF3 ,KC_SF4 ,KC_SF5 ,KC_SF6 ,KC_SF7 ,KC_SF8 ,KC_SF9 ,KC_SF10,KC_SF11,KC_SF12,
 // ├───────┼───────┼───────┼───────┴───────┴───┬───┴───┬───┴───────┴───────┼───────┼───────┼───────┤
     _______,_______,_______,      _______      ,_______,      _______      ,_______,_______,_______
 // ╰───────┴───────┴───────┴───────────────────┴───────┴───────────────────┴───────┴───────┴───────╯
@@ -230,17 +231,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 ),
 
 };
-// [_FUNC] = LAYOUT_tkl_ansi(
-// // ╭───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────╮
-//     KC_ESC ,KC_1   ,KC_2   ,KC_3   ,KC_4   ,KC_5   ,KC_6   ,KC_7   ,KC_8   ,KC_9   ,KC_0   ,KC_BSLS,
-// // ├───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┴───────┤
-//     KC_CAPS,MD_BLE1,MD_BLE2,MD_BLE3,MD_24G ,MD_USB ,RM_VALU,RM_SATD,KC_MINS,KC_EQL ,    RM_TOGG    ,
-// // ├───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┬───────┤
-//     KC_LSFT,KC_GRV ,RM_NEXT,RM_SPDD,RM_SPDU,KC_V   ,RM_HUED,RM_VALD,RM_HUEU,KC_COMM,KC_UP  ,MW_CH  ,
-// // ├───────┼───────┼───────┼───────┴───────┴───┬───┴───┬───┴───────┴───────┼───────┼───────┼───────┤
-//     EE_CLR ,KC_LALT,KC_LGUI,      QK_BAT       ,KC_NO  ,       KC_SPC      ,KC_LEFT,KC_DOWN,DBG_SW
-// // ╰───────┴───────┴───────┴───────────────────┴───────┴───────────────────┴───────┴───────┴───────╯
-// ),
+
 // clang-format on
 
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
