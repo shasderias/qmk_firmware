@@ -19,9 +19,9 @@
 
 #include QMK_KEYBOARD_H
 #include "rdmctmzt_common.h"
+#include "config.h"
 #include "../../../../../quantum/keycodes.h"
 #include "../../../../../quantum/eeconfig.h"
-#include "config.h"
 #include "../../../../../quantum/keymap_extras/keymap_us.h"
 
 #define SHSP MT(MOD_LSFT, KC_SPC)
@@ -40,6 +40,7 @@
 #define CK_TDRC TD(TD_RCTRL)
 #define CK_LSPC TD(TD_LEFT_SPACE)
 #define CK_RSFT MO(_RIGHT_SHIFT)
+#define CK_LGUI TD(TD_LGUI)
 
 enum tap_dance_state {
     TD_NONE,
@@ -72,6 +73,7 @@ enum {
     TD_SHIFT,
     TD_RIGHT_SPACE,
     TD_LEFT_SPACE,
+    TD_LGUI,
 };
 
 void td_alt_finished(tap_dance_state_t *state, void *user_data);
@@ -88,6 +90,8 @@ void td_right_space_finished(tap_dance_state_t *state, void *user_data);
 void td_right_space_reset(tap_dance_state_t *state, void *user_data);
 void td_left_space_finished(tap_dance_state_t *state, void *user_data);
 void td_left_space_reset(tap_dance_state_t *state, void *user_data);
+void td_lgui_finished(tap_dance_state_t *state, void *user_data);
+void td_lgui_reset(tap_dance_state_t *state, void *user_data);
 
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -113,7 +117,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // ├───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┬───────┤
     TC_SHFT,KC_SLSH, KC_Z  , KC_X  , KC_C  , KC_V  , KC_B  , KC_N  , KC_M  ,KC_COMM,KC_DOT ,CK_RSFT,
 // ├───────┼───────┼───────┼───────┴───────┴───┬───┴───┬───┴───────┴───────┼───────┼───────┼───────┤
-    TC_CTRL,KC_LGUI,TC_ALT,      CK_LSPC       , MOLO  ,       R_SPC       ,KC_RALT,KC_APP ,CK_TDRC
+    TC_CTRL,CK_LGUI,TC_ALT,      CK_LSPC       , MOLO  ,       R_SPC       ,KC_RALT,KC_APP ,CK_TDRC
 // ╰───────┴───────┴───────┴───────────────────┴───────┴───────────────────┴───────┴───────┴───────╯
 ),
 
@@ -244,6 +248,7 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
         case TC_ALT:
         case TC_CTRL:
         case TC_SHFT:
+        case CK_LGUI:
             return TAPPING_TERM + 80;
         default:
             return TAPPING_TERM;
@@ -591,12 +596,13 @@ void td_left_space_finished(tap_dance_state_t *state, void *user_data) {
     left_space_td_state = calc_state(state);
     switch (left_space_td_state) {
         case TD_SINGLE_TAP:
-            set_oneshot_layer(_OSL_LSPC, ONESHOT_START);
+            tap_code(KC_SPC);
             break;
         case TD_SINGLE_HOLD:
             register_code(KC_LSFT);
             break;
         case TD_DOUBLE_TAP:
+            set_oneshot_layer(_OSL_LSPC, ONESHOT_START);
             break;
         case TD_DOUBLE_HOLD:
             layer_on(_LOWER);
@@ -613,12 +619,12 @@ void td_left_space_finished(tap_dance_state_t *state, void *user_data) {
 void td_left_space_reset(tap_dance_state_t *state, void *user_data) {
     switch (left_space_td_state) {
         case TD_SINGLE_TAP:
-            clear_oneshot_layer_state(ONESHOT_PRESSED);
             break;
         case TD_SINGLE_HOLD:
             unregister_code(KC_LSFT);
             break;
         case TD_DOUBLE_TAP:
+            clear_oneshot_layer_state(ONESHOT_PRESSED);
             break;
         case TD_DOUBLE_HOLD:
             layer_off(_LOWER);
@@ -632,8 +638,62 @@ void td_left_space_reset(tap_dance_state_t *state, void *user_data) {
     }
 }
 
+static enum tap_dance_state lgui_td_state;
+
+void td_lgui_finished(tap_dance_state_t *state, void *user_data) {
+    lgui_td_state = calc_state(state);
+    switch (lgui_td_state) {
+        case TD_SINGLE_TAP:
+            tap_code(KC_LGUI);
+            break;
+        case TD_SINGLE_HOLD:
+            register_code(KC_LGUI);
+            break;
+        case TD_DOUBLE_TAP:
+            tap_code(KC_LGUI);
+            break;
+        case TD_DOUBLE_HOLD:
+            register_code(KC_LGUI);
+            layer_on(_TD_NUM);
+            break;
+        case TD_TRIPLE_TAP:
+            tap_code(KC_LGUI);
+            break;
+        case TD_TRIPLE_HOLD:
+            register_code(KC_LGUI);
+            layer_on(_TD_FN);
+            break;
+        default:
+            break;
+    }
+}
+
+void td_lgui_reset(tap_dance_state_t *state, void *user_data) {
+    switch (lgui_td_state) {
+        case TD_SINGLE_TAP:
+            break;
+        case TD_SINGLE_HOLD:
+            unregister_code(KC_LGUI);
+            break;
+        case TD_DOUBLE_TAP:
+            break;
+        case TD_DOUBLE_HOLD:
+            unregister_code(KC_LGUI);
+            layer_off(_TD_NUM);
+            break;
+        case TD_TRIPLE_TAP:
+            break;
+        case TD_TRIPLE_HOLD:
+            unregister_code(KC_LGUI);
+            layer_off(_TD_FN);
+            break;
+        default:
+            break;
+    }
+}
+
 tap_dance_action_t tap_dance_actions[] = {
-    [TD_ALT] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_alt_finished, td_alt_reset), [TD_CTRL] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_ctrl_finished, td_ctrl_reset), [TD_CAPS] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_caps_finished, td_caps_reset), [TD_RCTRL] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_rctrl_finished, td_rctrl_reset), [TD_SHIFT] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_shift_finished, td_shift_reset), [TD_RIGHT_SPACE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_right_space_finished, td_right_space_reset), [TD_LEFT_SPACE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_left_space_finished, td_left_space_reset),
+    [TD_ALT] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_alt_finished, td_alt_reset), [TD_CTRL] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_ctrl_finished, td_ctrl_reset), [TD_CAPS] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_caps_finished, td_caps_reset), [TD_RCTRL] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_rctrl_finished, td_rctrl_reset), [TD_SHIFT] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_shift_finished, td_shift_reset), [TD_RIGHT_SPACE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_right_space_finished, td_right_space_reset), [TD_LEFT_SPACE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_left_space_finished, td_left_space_reset), [TD_LGUI] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_lgui_finished, td_lgui_reset),
 };
 
 // const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
