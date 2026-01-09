@@ -26,9 +26,13 @@
 
 #define SHSP MT(MOD_LSFT, KC_SPC)
 #define LOSP LT(_LOWER, KC_SPC)
-#define CK_RSPC LT(_RAISE, KC_SPC)
+
+#define CK_ESC LT(_LOWER, KC_ESC)
+#define CK_BPSP LT(_RAISE, KC_BSPC)
 
 #define MOUT MO(_UTILITY)
+
+#define CK_TAB LT(_NUM, KC_TAB)
 
 #define TC_ALT TD(TD_ALT)
 #define TC_CTRL TD(TD_CTRL)
@@ -40,7 +44,7 @@
 
 #define CK_LSPC TD(TD_LEFT_SPACE)
 #define CK_FN MO(_FUNC)
-#define CK_RSPC TD(TD_RIGHT_SPACE)
+#define CK_RSPC LT(_RAISE, KC_SPC)
 
 #define KC_SF1 S(KC_F1)
 #define KC_SF2 S(KC_F2)
@@ -72,7 +76,7 @@ enum layer_number {
     _RAISE,
     _FUNC,
     _RCTRL,
-    _TD_NUM,
+    _NUM,
     _TD_FN,
     _OSL_LSPC,
     _RIGHT_SHIFT,
@@ -124,9 +128,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
  [_QWERTY] = LAYOUT_tkl_ansi(
 // ╭───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────╮
-    KC_ESC , KC_Q  , KC_W  , KC_E  , KC_R  , KC_T  , KC_Y  , KC_U  , KC_I  , KC_O  , KC_P  ,KC_BSPC,
+    CK_ESC , KC_Q  , KC_W  , KC_E  , KC_R  , KC_T  , KC_Y  , KC_U  , KC_I  , KC_O  , KC_P  ,CK_BPSP,
 // ├───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┴───────┤
-    KC_TAB , KC_A  , KC_S  , KC_D  , KC_F  , KC_G  , KC_H  , KC_J  , KC_K  , KC_L  ,    KC_ENT     ,
+    CK_TAB , KC_A  , KC_S  , KC_D  , KC_F  , KC_G  , KC_H  , KC_J  , KC_K  , KC_L  ,    KC_ENT     ,
 // ├───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┬───────┤
     TC_SHFT,KC_SLSH, KC_Z  , KC_X  , KC_C  , KC_V  , KC_B  , KC_N  , KC_M  ,KC_COMM,KC_DOT ,CK_RSFT,
 // ├───────┼───────┼───────┼───────┴───────┴───┬───┴───┬───┴───────┴───────┼───────┼───────┼───────┤
@@ -136,27 +140,28 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_LOWER] = LAYOUT_tkl_ansi(
 // ╭───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────╮
-    KC_GRV ,_______,KC_LABK,KC_RABK,_______,_______,_______,KC_EXLM,KC_EQL ,KC_LPRN,KC_RPRN,_______,
+    KC_GRV ,_______,_______,KC_LABK,KC_RABK,_______,_______,KC_EXLM,KC_EQL ,KC_LPRN,KC_RPRN,_______,
 // ├───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┴───────┤
-    KC_TILD,_______,KC_LBRC,KC_RBRC,_______,_______,_______,KC_COLN,KC_EQL ,_______,    _______    ,
+    KC_TILD,_______,_______,KC_LBRC,KC_RBRC,_______,_______,KC_COLN,KC_EQL ,_______,    _______    ,
 // ├───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┬───────┤
-    _______,_______,_______,KC_LCBR,KC_RCBR,_______,_______,KC_UNDS,KC_MINS,KC_EQL ,_______,_______,
+    _______,_______,_______,_______,KC_LCBR,KC_RCBR,_______,KC_UNDS,KC_MINS,KC_PLUS,_______,_______,
 // ├───────┼───────┼───────┼───────┴───────┴───┬───┴───┬───┴───────┴───────┼───────┼───────┼───────┤
-    _______,_______,_______,      _______      ,_______,      _______      ,KC_PLUS,_______,QK_BOOT
+    _______,_______,_______,      _______      ,_______,      _______      ,_______,_______,_______
 // ╰───────┴───────┴───────┴───────────────────┴───────┴───────────────────┴───────┴───────┴───────╯
 ),
 
 [_RAISE] = LAYOUT_tkl_ansi(
 // ╭───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────╮
-     KC_0  , KC_1  , KC_2  , KC_3  ,_______,_______,KC_PGUP,KC_HOME, KC_UP ,KC_END ,_______,_______,
+    _______,_______,_______,KC_LABK,KC_RABK,_______,KC_PGUP,KC_HOME, KC_UP ,KC_END ,_______,_______,
 // ├───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┴───────┤
-    _______, KC_4  , KC_5  , KC_6  ,_______,_______,KC_PGDN,KC_LEFT,KC_DOWN,KC_RGHT,    _______    ,
+    _______,_______,_______,KC_LBRC,KC_RBRC,_______,KC_PGDN,KC_LEFT,KC_DOWN,KC_RGHT,    _______    ,
 // ├───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┬───────┤
-    _______, KC_DOT, KC_7  , KC_8  , KC_9  ,_______,_______,_______,_______,_______,_______,_______,
+    _______,_______,_______,_______,KC_LCBR,KC_RCBR,_______,_______,_______,_______,_______,_______,
 // ├───────┼───────┼───────┼───────┴───────┴───┬───┴───┬───┴───────┴───────┼───────┼───────┼───────┤
-    _______,_______, KC_0  ,      _______      ,_______,      _______      ,_______,_______,_______
+    _______,_______,_______,      _______      ,_______,      _______      ,_______,_______,_______
 // ╰───────┴───────┴───────┴───────────────────┴───────┴───────────────────┴───────┴───────┴───────╯
 ),
+
 
 [_FUNC] = LAYOUT_tkl_ansi(
 // ╭───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────╮
@@ -182,7 +187,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // ╰───────┴───────┴───────┴───────────────────┴───────┴───────────────────┴───────┴───────┴───────╯
 ),
 
-[_TD_NUM] = LAYOUT_tkl_ansi(
+[_NUM] = LAYOUT_tkl_ansi(
 // ╭───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────╮
     _______, KC_1  , KC_2  , KC_3  , KC_4  , KC_5  , KC_6  , KC_7  , KC_8  , KC_9  , KC_0  ,_______,
 // ├───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┴───────┤
@@ -231,7 +236,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 ),
 
 };
-
 // clang-format on
 
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
@@ -288,7 +292,7 @@ void td_alt_finished(tap_dance_state_t *state, void *user_data) {
             // do nothing for now
             break;
         case TD_DOUBLE_HOLD:
-            layer_on(_TD_NUM);
+            layer_on(_NUM);
             break;
         case TD_TRIPLE_TAP:
             register_code(KC_LEFT_ALT);
@@ -315,7 +319,7 @@ void td_alt_reset(tap_dance_state_t *state, void *user_data) {
             break;
         case TD_DOUBLE_HOLD:
             unregister_code(KC_LEFT_ALT);
-            layer_off(_TD_NUM);
+            layer_off(_NUM);
             break;
         case TD_TRIPLE_TAP:
             // do nothing
@@ -345,7 +349,7 @@ void td_ctrl_finished(tap_dance_state_t *state, void *user_data) {
             break;
         case TD_DOUBLE_HOLD:
             register_code(KC_LEFT_CTRL);
-            layer_on(_TD_NUM);
+            layer_on(_NUM);
             break;
         case TD_TRIPLE_TAP:
             // do nothing
@@ -371,7 +375,7 @@ void td_ctrl_reset(tap_dance_state_t *state, void *user_data) {
             break;
         case TD_DOUBLE_HOLD:
             unregister_code(KC_LEFT_CTRL);
-            layer_off(_TD_NUM);
+            layer_off(_NUM);
             break;
         case TD_TRIPLE_TAP:
             // do nothing
@@ -488,7 +492,7 @@ void td_shift_finished(tap_dance_state_t *state, void *user_data) {
             break;
         case TD_DOUBLE_HOLD:
             register_code(KC_LSFT);
-            layer_on(_TD_NUM);
+            layer_on(_NUM);
             break;
         case TD_TRIPLE_TAP:
             // do nothing
@@ -514,7 +518,7 @@ void td_shift_reset(tap_dance_state_t *state, void *user_data) {
             break;
         case TD_DOUBLE_HOLD:
             unregister_code(KC_LSFT);
-            layer_off(_TD_NUM);
+            layer_off(_NUM);
             break;
         case TD_TRIPLE_TAP:
             // do nothing
@@ -645,7 +649,7 @@ void td_lgui_finished(tap_dance_state_t *state, void *user_data) {
             break;
         case TD_DOUBLE_HOLD:
             register_code(KC_LGUI);
-            layer_on(_TD_NUM);
+            layer_on(_NUM);
             break;
         case TD_TRIPLE_TAP:
             tap_code(KC_LGUI);
@@ -670,7 +674,7 @@ void td_lgui_reset(tap_dance_state_t *state, void *user_data) {
             break;
         case TD_DOUBLE_HOLD:
             unregister_code(KC_LGUI);
-            layer_off(_TD_NUM);
+            layer_off(_NUM);
             break;
         case TD_TRIPLE_TAP:
             break;
@@ -683,9 +687,18 @@ void td_lgui_reset(tap_dance_state_t *state, void *user_data) {
     }
 }
 
+// clang-format off
 tap_dance_action_t tap_dance_actions[] = {
-    [TD_ALT] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_alt_finished, td_alt_reset), [TD_CTRL] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_ctrl_finished, td_ctrl_reset), [TD_CAPS] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_caps_finished, td_caps_reset), [TD_RCTRL] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_rctrl_finished, td_rctrl_reset), [TD_SHIFT] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_shift_finished, td_shift_reset), [TD_RIGHT_SPACE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_right_space_finished, td_right_space_reset), [TD_LEFT_SPACE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_left_space_finished, td_left_space_reset), [TD_LGUI] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_lgui_finished, td_lgui_reset),
+    [TD_ALT] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_alt_finished, td_alt_reset),
+    [TD_CTRL] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_ctrl_finished, td_ctrl_reset),
+    [TD_CAPS] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_caps_finished, td_caps_reset),
+    [TD_RCTRL] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_rctrl_finished, td_rctrl_reset),
+    [TD_SHIFT] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_shift_finished, td_shift_reset),
+    [TD_RIGHT_SPACE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_right_space_finished, td_right_space_reset),
+    [TD_LEFT_SPACE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_left_space_finished, td_left_space_reset),
+    [TD_LGUI] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_lgui_finished, td_lgui_reset),
 };
+// clang-format on
 
 // const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //     [0] = LAYOUT_tkl_ansi(
