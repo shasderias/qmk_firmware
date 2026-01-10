@@ -28,23 +28,24 @@
 #define LOSP LT(_LOWER, KC_SPC)
 
 #define CK_ESC LT(_LOWER, KC_ESC)
-#define CK_BPSP KC_BSPC
+#define CK_BPSP TD(TD_BSPC)
 
 #define MOUT MO(_UTILITY)
 
-#define CK_TAB LT(_NUM, KC_TAB)
+#define CK_TAB KC_TAB
+// #define CK_TAB LT(_NUM, KC_TAB)
 
-#define TC_ALT TD(TD_ALT)
-#define TC_CTRL TD(TD_CTRL)
-#define TC_SHFT TD(TD_SHIFT)
-#define CK_TDCA TD(TD_CAPS)
+#define CK_ALT TD(TD_ALT)
+#define CK_CTRL TD(TD_CTRL)
+#define CK_SHFT TD(TD_SHIFT)
+
 #define CK_TDRC TD(TD_RCTRL)
 #define CK_RSFT MO(_NUM)
 #define CK_LGUI TD(TD_LGUI)
 
 #define CK_LSPC TD(TD_LEFT_SPACE)
 #define CK_FN MO(_FUNC)
-#define CK_RSPC LT(_RAISE, KC_SPC)
+#define CK_RSPC LT(_NAV, KC_SPC)
 
 #define KC_SF1 S(KC_F1)
 #define KC_SF2 S(KC_F2)
@@ -59,21 +60,13 @@
 #define KC_SF11 S(KC_F11)
 #define KC_SF12 S(KC_F12)
 
-enum tap_dance_state {
-    TD_NONE,
-    TD_UNKNOWN,
-    TD_SINGLE_TAP,
-    TD_SINGLE_HOLD,
-    TD_DOUBLE_TAP,
-    TD_DOUBLE_HOLD,
-    TD_TRIPLE_TAP,
-    TD_TRIPLE_HOLD,
-};
+enum tap_dance_state { TD_NONE, TD_UNKNOWN, TD_SINGLE_TAP, TD_SINGLE_HOLD, TD_DOUBLE_TAP, TD_DOUBLE_HOLD, TD_TRIPLE_TAP, TD_TRIPLE_HOLD, TD_TAP, TD_HOLD };
 
 enum layer_number {
     _QWERTY = 0,
     _LOWER,
     _RAISE,
+    _NAV,
     _FUNC,
     _RCTRL,
     _NUM,
@@ -92,7 +85,7 @@ enum {
     TD_LEFT_SPACE,
     TD_RIGHT_SPACE,
     TD_LGUI,
-    TD_BPSP,
+    TD_BSPC,
 };
 
 void td_alt_finished(tap_dance_state_t *state, void *user_data);
@@ -111,6 +104,7 @@ void td_right_space_finished(tap_dance_state_t *state, void *user_data);
 void td_right_space_reset(tap_dance_state_t *state, void *user_data);
 void td_lgui_finished(tap_dance_state_t *state, void *user_data);
 void td_lgui_reset(tap_dance_state_t *state, void *user_data);
+void td_bpsp_tap(tap_dance_state_t *state, void *user_data);
 void td_bpsp_finished(tap_dance_state_t *state, void *user_data);
 void td_bpsp_reset(tap_dance_state_t *state, void *user_data);
 
@@ -136,9 +130,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // ├───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┴───────┤
     CK_TAB , KC_A  , KC_S  , KC_D  , KC_F  , KC_G  , KC_H  , KC_J  , KC_K  , KC_L  ,    KC_ENT     ,
 // ├───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┬───────┤
-    TC_SHFT,KC_SLSH, KC_Z  , KC_X  , KC_C  , KC_V  , KC_B  , KC_N  , KC_M  ,KC_COMM,KC_DOT ,CK_RSFT,
+    CK_SHFT,KC_SLSH, KC_Z  , KC_X  , KC_C  , KC_V  , KC_B  , KC_N  , KC_M  ,KC_COMM,KC_DOT ,CK_RSFT,
 // ├───────┼───────┼───────┼───────┴───────┴───┬───┴───┬───┴───────┴───────┼───────┼───────┼───────┤
-    TC_CTRL,CK_LGUI,TC_ALT,      CK_LSPC       , CK_FN ,       CK_RSPC     ,KC_RALT,KC_APP ,CK_TDRC
+    CK_CTRL,CK_LGUI,CK_ALT,      CK_LSPC       , CK_FN ,       CK_RSPC     ,KC_RALT,KC_APP ,CK_TDRC
 // ╰───────┴───────┴───────┴───────────────────┴───────┴───────────────────┴───────┴───────┴───────╯
 ),
 
@@ -156,11 +150,23 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_RAISE] = LAYOUT_tkl_ansi(
 // ╭───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────╮
-    _______,_______,_______,KC_LABK,KC_RABK,_______,KC_PGUP,KC_HOME, KC_UP ,KC_END ,_______,_______,
+    _______,_______,_______,KC_LABK,KC_RABK,_______,_______,_______,_______,_______,_______,_______,
 // ├───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┴───────┤
-    _______,_______,_______,KC_LBRC,KC_RBRC,_______,KC_PGDN,KC_LEFT,KC_DOWN,KC_RGHT,    _______    ,
+    _______,_______,_______,KC_LBRC,KC_RBRC,_______,_______,_______,_______,_______,   _______    ,
 // ├───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┬───────┤
     _______,_______,_______,_______,KC_LCBR,KC_RCBR,_______,_______,_______,_______,_______,_______,
+// ├───────┼───────┼───────┼───────┴───────┴───┬───┴───┬───┴───────┴───────┼───────┼───────┼───────┤
+    _______,_______,_______,      _______      ,_______,      _______      ,_______,_______,_______
+// ╰───────┴───────┴───────┴───────────────────┴───────┴───────────────────┴───────┴───────┴───────╯
+),
+
+[_NAV] = LAYOUT_tkl_ansi(
+// ╭───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────╮
+    _______,_______,KC_PIPE,KC_DLR ,_______,_______,KC_PGUP,KC_HOME, KC_UP ,KC_END ,_______,_______,
+// ├───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┴───────┤
+    _______,_______,_______,_______,_______,_______,KC_PGDN,KC_LEFT,KC_DOWN,KC_RGHT,    _______    ,
+// ├───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┬───────┤
+    _______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,
 // ├───────┼───────┼───────┼───────┴───────┴───┬───┴───┬───┴───────┴───────┼───────┼───────┼───────┤
     _______,_______,_______,      _______      ,_______,      _______      ,_______,_______,_______
 // ╰───────┴───────┴───────┴───────────────────┴───────┴───────────────────┴───────┴───────┴───────╯
@@ -169,7 +175,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_FUNC] = LAYOUT_tkl_ansi(
 // ╭───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────╮
-    KC_F1  , KC_F2 , KC_F3 , KC_F4 , KC_F5 , KC_F6 , KC_F7 , KC_F8 , KC_F9 ,KC_F10 ,KC_F11 ,KC_F12 ,
+     KC_F1 , KC_F2 , KC_F3 , KC_F4 , KC_F5 , KC_F6 , KC_F7 , KC_F8 , KC_F9 ,KC_F10 ,KC_F11 ,KC_F12 ,
 // ├───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┴───────┤
     _______,MD_BLE1,MD_BLE2,MD_BLE3,MD_24G ,MD_USB ,RM_VALU,RM_SATD,_______,_______,    RM_TOGG    ,
 // ├───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┬───────┤
@@ -256,12 +262,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
-        case TC_ALT:
-        case TC_CTRL:
-        case TC_SHFT:
-        case CK_LGUI:
-        case CK_LSPC:
-            return TAPPING_TERM + 80;
         default:
             return TAPPING_TERM;
     }
@@ -269,7 +269,7 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
 
 const uint16_t PROGMEM combo_back_slash[] = {KC_P, KC_BSPC, COMBO_END};
 const uint16_t PROGMEM combo_semicolon[]  = {KC_J, KC_K, COMBO_END};
-const uint16_t PROGMEM combo_slash[]      = {KC_DOT, CK_RSFT, COMBO_END};
+const uint16_t PROGMEM combo_slash[]      = {KC_COMMA, KC_DOT, COMBO_END};
 const uint16_t PROGMEM combo_quote[]      = {KC_K, KC_L, COMBO_END};
 
 combo_t key_combos[] = {
@@ -505,14 +505,17 @@ void td_shift_finished(tap_dance_state_t *state, void *user_data) {
             register_code(KC_LSFT);
             break;
         case TD_DOUBLE_TAP:
-            // do nothing for now
+            tap_code(KC_LSFT);
+            tap_code(KC_LSFT);
             break;
         case TD_DOUBLE_HOLD:
             register_code(KC_LSFT);
             layer_on(_NUM);
             break;
         case TD_TRIPLE_TAP:
-            // do nothing
+            tap_code(KC_LSFT);
+            tap_code(KC_LSFT);
+            tap_code(KC_LSFT);
             break;
         case TD_TRIPLE_HOLD:
             register_code(KC_LSFT);
@@ -712,34 +715,33 @@ void td_lgui_reset(tap_dance_state_t *state, void *user_data) {
 
 static enum tap_dance_state bpsp_td_state;
 
+enum tap_dance_state td_bpsp_calc_state(tap_dance_state_t *state) {
+    if (state->count == 1 && !state->pressed) return TD_SINGLE_TAP;
+    if (state->count == 1 && state->pressed) return TD_SINGLE_HOLD;
+    if (!state->pressed) return TD_TAP;
+    return TD_HOLD;
+}
+
+void td_bpsp_tap(tap_dance_state_t *state, void *user_data) {
+    if (state->count >= 2) {
+        tap_code(KC_BSPC);
+    }
+}
+
 void td_bpsp_finished(tap_dance_state_t *state, void *user_data) {
-    bpsp_td_state = calc_state(state);
+    bpsp_td_state = td_bpsp_calc_state(state);
     switch (bpsp_td_state) {
         case TD_SINGLE_TAP:
             tap_code(KC_BSPC);
             break;
         case TD_SINGLE_HOLD:
-            layer_on(_RAISE);
+            layer_on(_NUM);
             break;
-        case TD_DOUBLE_TAP:
-            tap_code(KC_BSPC);
-            tap_code(KC_BSPC);
-            break;
-        case TD_DOUBLE_HOLD:
-            tap_code(KC_BSPC);
+        case TD_HOLD:
             tap_code(KC_BSPC);
             register_code(KC_BSPC);
             break;
-        case TD_TRIPLE_TAP:
-            tap_code(KC_BSPC);
-            tap_code(KC_BSPC);
-            tap_code(KC_BSPC);
-            break;
-        case TD_TRIPLE_HOLD:
-            // do nothing
-            break;
         default:
-            tap_code(KC_BSPC);
             break;
     }
 }
@@ -749,17 +751,10 @@ void td_bpsp_reset(tap_dance_state_t *state, void *user_data) {
         case TD_SINGLE_TAP:
             break;
         case TD_SINGLE_HOLD:
-            layer_off(_RAISE);
+            layer_off(_NUM);
             break;
-        case TD_DOUBLE_TAP:
-            break;
-        case TD_DOUBLE_HOLD:
+        case TD_HOLD:
             unregister_code(KC_BSPC);
-            break;
-        case TD_TRIPLE_TAP:
-            break;
-        case TD_TRIPLE_HOLD:
-            // do nothing
             break;
         default:
             break;
@@ -776,8 +771,9 @@ tap_dance_action_t tap_dance_actions[] = {
     [TD_RIGHT_SPACE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_right_space_finished, td_right_space_reset),
     [TD_LEFT_SPACE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_left_space_finished, td_left_space_reset),
     [TD_LGUI] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_lgui_finished, td_lgui_reset),
-    [TD_BPSP] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_bpsp_finished, td_bpsp_reset),
+    [TD_BSPC] = ACTION_TAP_DANCE_FN_ADVANCED(td_bpsp_tap, td_bpsp_finished, td_bpsp_reset),
 };
+
 // clang-format on
 
 // const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -812,4 +808,8 @@ tap_dance_action_t tap_dance_actions[] = {
 // Returning KC_ESC means any key will wake as ESC
 uint16_t dynamic_keymap_get_keycode(uint8_t layer, uint8_t row, uint8_t column) {
     return KC_ESC;
+}
+
+bool combo_should_trigger(uint16_t combo_index, combo_t *combo, uint16_t keycode, keyrecord_t *record) {
+    return layer_state == (1UL << _QWERTY);
 }
