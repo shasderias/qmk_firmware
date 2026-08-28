@@ -22,6 +22,7 @@ enum tap_dance_state {
 
 enum layer_number {
     _QWERTY = 0,
+    _MAC,
     _GAME,
     _LOWER,
     _RAISE,
@@ -72,9 +73,23 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // ├───────┼───────┼───────┼───────┼───────┼───────┤                    ├───────┼───────┼───────┼───────┼───────┼───────┤
     KC_LSFT, KC_A  , KC_S  , KC_D  , KC_F  , KC_G  ,                      KC_H  , KC_J  , KC_K  , KC_L  ,KC_SCLN,KC_QUOT,
 // ├───────┼───────┼───────┼───────┼───────┼───────┼───────╮    ╭───────┼───────┼───────┼───────┼───────┼───────┼───────┤
-    CK_TDCO, KC_Z  , KC_X  , KC_C  , KC_V  , KC_B  ,KC_CCCV,     QK_LEAD, KC_N  , KC_M  ,KC_COMM,KC_DOT ,KC_SLSH,CK_TDCA,
+    CK_TDCO, KC_Z  , KC_X  , KC_C  , KC_V  , KC_B  ,QK_LEAD,     QK_LEAD, KC_N  , KC_M  ,KC_COMM,KC_DOT ,KC_SLSH,CK_TDCA,
 // ╰───────┴───────┴───────┼───────┼───────┼───────┼───────┤    ├───────┼───────┼───────┼───────┼───────┴───────┴───────╯
                             KC_LGUI,CK_TDAO,CK_LOEN,CK_SHSP,     KC_SPC ,CK_RAEN,KC_DEL ,CK_MOFN
+//                         ╰───────┴───────┴───────┴───────╯    ╰───────┴───────┴───────┴───────╯
+),
+
+[_MAC] = LAYOUT(
+// ╭───────┬───────┬───────┬───────┬───────┬───────╮                    ╭───────┬───────┬───────┬───────┬───────┬───────╮
+    _______,_______,_______,_______,_______,_______,                     _______,_______,_______,_______,_______,_______,
+// ├───────┼───────┼───────┼───────┼───────┼───────┤                    ├───────┼───────┼───────┼───────┼───────┼───────┤
+    _______,_______,_______,_______,_______,_______,                     _______,_______,_______,_______,_______,_______,
+// ├───────┼───────┼───────┼───────┼───────┼───────┤                    ├───────┼───────┼───────┼───────┼───────┼───────┤
+    _______,_______,_______,_______,_______,_______,                     _______,_______,_______,_______,_______,_______,
+// ├───────┼───────┼───────┼───────┼───────┼───────┼───────╮    ╭───────┼───────┼───────┼───────┼───────┼───────┼───────┤
+    _______,_______,_______,_______,_______,_______,_______,     _______,_______,_______,_______,_______,_______,_______,
+// ╰───────┴───────┴───────┼───────┼───────┼───────┼───────┤    ├───────┼───────┼───────┼───────┼───────┴───────┴───────╯
+                            CK_TDAO,KC_LGUI,_______,_______,     _______,_______,_______,_______
 //                         ╰───────┴───────┴───────┴───────╯    ╰───────┴───────┴───────┴───────╯
 ),
 
@@ -165,11 +180,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 // clang-format on
 
-uint32_t led_off_callback(uint32_t trigger_time, void *cb_arg) {
-    rgblight_sethsv_noeeprom(HSV_BLACK);
-    return 0;
-}
-
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         case KC_CCCV:
@@ -187,24 +197,19 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     return true;
 }
 
-void leader_start_user(void) {
-    rgblight_sethsv_noeeprom(HSV_PURPLE);
-}
-
 void leader_end_user(void) {
     if (leader_sequence_one_key(KC_Q)) {
-        defer_exec(500, led_off_callback, NULL);
-        rgblight_sethsv_noeeprom(HSV_GOLD);
         layer_off(_GAME);
+        layer_off(_MAC);
     } else if (leader_sequence_one_key(KC_G)) {
-        defer_exec(500, led_off_callback, NULL);
-        rgblight_sethsv_noeeprom(HSV_BLUE);
+        layer_off(_MAC);
         layer_on(_GAME);
+    } else if (leader_sequence_one_key(KC_M)) {
+        layer_off(_GAME);
+        layer_on(_MAC);
     } else if (leader_sequence_one_key(KC_P)) {
-        rgblight_sethsv_noeeprom(HSV_BLACK);
         SEND_STRING(SS_DOWN(X_LSFT) SS_TAP(X_INS) SS_UP(X_LSFT));
     } else if (leader_sequence_two_keys(KC_ESCAPE, KC_BACKSPACE)) {
-        rgblight_sethsv_noeeprom(HSV_BLACK);
         bootloader_jump();
     }
 }
@@ -357,11 +362,6 @@ tap_dance_action_t tap_dance_actions[] = {
     [TD_CAPS] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_caps_finished, td_caps_reset),
 };
 
-void keyboard_post_init_user(void) {
-    rgblight_enable_noeeprom();
-    rgblight_sethsv_noeeprom(HSV_BLACK);
-    rgblight_mode_noeeprom(RGBLIGHT_MODE_STATIC_LIGHT);
-}
 
 void caps_word_set_user(bool active) {
     if (active) {
